@@ -1,0 +1,30 @@
+{
+  "name": "restaurant-backend",
+  "version": "1.0.0",
+  "description": "Backend API server for The Family Table restaurant management system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "migrate": "node migrate_schema.js && node migrate_discounts.js && node migrate_deals.js",
+    "seed": "node seed_new_schema.js"
+  },
+  "keywords": [
+    "restaurant",
+    "menu",
+    "api",
+    "express",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "pg": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
