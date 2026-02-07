@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, X, ArrowLeft } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
-import API_URL from '../config/api';
+import API_URL, { STORAGE_BUCKET } from '../config/api';
 
 const API = API_URL;
 
@@ -151,21 +151,42 @@ export default function AdminFoodLibrary() {
             allergens: Array.isArray(item.allergens) ? item.allergens : [],
             is_active: item.is_active !== undefined && item.is_active !== null ? Boolean(item.is_active) : true
         });
+        setImageDisplayUrl(item.imageUrl || item.image || '');
         setShowForm(true);
     };
 
-    const handleImageUpload = (e) => {
+    const [uploadingImage, setUploadingImage] = useState(false);
+    const [imageDisplayUrl, setImageDisplayUrl] = useState('');
+    const handleImageUpload = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
         if (!file.type.startsWith('image/')) {
             alert('Please select an image file');
             return;
         }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setFormData(prev => ({ ...prev, image: reader.result }));
-        };
-        reader.readAsDataURL(file);
+        setUploadingImage(true);
+        try {
+            const formDataUpload = new FormData();
+            formDataUpload.append('file', file);
+            const res = await fetch(`${API}/api/upload`, {
+                method: 'POST',
+                body: formDataUpload
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || 'Upload failed');
+            }
+            const data = await res.json();
+            if (data.path) {
+                setFormData(prev => ({ ...prev, image: data.path }));
+                setImageDisplayUrl(data.url || '');
+            }
+        } catch (err) {
+            alert(err.message || 'Image upload failed');
+        } finally {
+            setUploadingImage(false);
+            e.target.value = '';
+        }
     };
 
     const resetForm = () => {
@@ -181,6 +202,7 @@ export default function AdminFoodLibrary() {
             allergens: [],
             is_active: true
         });
+        setImageDisplayUrl('');
         setEditingItem(null);
         setShowForm(false);
     };
@@ -303,31 +325,37 @@ export default function AdminFoodLibrary() {
 
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium mb-2">Image</label>
-                                    {formData.image && (
+                                    {(imageDisplayUrl || formData.image) && (
                                         <div className="mb-3">
                                             <img
-                                                src={formData.image}
+                                                src={imageDisplayUrl || formData.image}
                                                 alt="Preview"
                                                 className="w-full max-w-xs h-48 object-cover rounded-lg border border-gray-200"
                                             />
                                         </div>
                                     )}
                                     <div className="space-y-2">
-                                        <label className="block text-xs text-gray-600 mb-1">Upload image file</label>
+                                        <label className="block text-xs text-gray-600 mb-1">Upload image file (saved to your private bucket)</label>
                                         <input
                                             type="file"
                                             accept="image/*"
                                             onChange={handleImageUpload}
+                                            disabled={uploadingImage}
                                             className="w-full px-4 py-2 border rounded-lg text-sm"
                                         />
+                                        {uploadingImage && <span className="text-sm text-gray-500">Uploading…</span>}
                                         <div className="text-xs text-gray-500">OR</div>
                                         <label className="block text-xs text-gray-600 mb-1">Or enter image URL</label>
                                         <input
                                             type="text"
                                             value={formData.image}
-                                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                                            onChange={(e) => {
+                                                const v = e.target.value;
+                                                setFormData(prev => ({ ...prev, image: v }));
+                                                setImageDisplayUrl(v);
+                                            }}
                                             className="w-full px-4 py-2 border rounded-lg"
-                                            placeholder="https://storage.googleapis.com/restaurant-files/dish.jpg"
+                                            placeholder={`https://storage.googleapis.com/${STORAGE_BUCKET}/dish.jpg`}
                                         />
                                     </div>
                                 </div>
@@ -418,7 +446,7 @@ export default function AdminFoodLibrary() {
                                         {itemsInCategory.map((item) => (
                                             <div key={item.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
                                                 <img
-                                                    src={item.image || 'https://placehold.co/400x300?text=No+Image'}
+                                                    src={(item.imageUrl || item.image) || 'https://placehold.co/400x300?text=No+Image'}
                                                     alt={item.name}
                                                     className="w-full h-48 object-cover"
                                                 />

@@ -1,14 +1,51 @@
 const express = require('express');
 const cors = require('cors');
+const multer = require('multer');
+const crypto = require('crypto');
 require('dotenv').config();
 const db = require('./db');
+const storage = require('./storage');
 const app = express();
 const port = 3000;
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use('/photos', express.static('photos'));
+
+// Serve GCS images when signed URLs are not available (e.g. local dev with user ADC). Path is URL-encoded, e.g. dishes%2Ffoo.jpg
+app.get(/^\/api\/image\/(.*)$/, (req, res, next) => {
+    const raw = req.path.slice('/api/image/'.length);
+    const objectPath = decodeURIComponent(raw);
+    if (!objectPath || objectPath.includes('..')) return res.status(400).send('Invalid path');
+    storage.streamFile(objectPath, res, next);
+});
+
+// Upload image to GCS (private bucket). Returns { path, url } for storing in DB.
+app.post('/api/upload', upload.single('file'), async (req, res, next) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    if (!req.file.mimetype || !req.file.mimetype.startsWith('image/')) {
+        return res.status(400).json({ error: 'File must be an image' });
+    }
+    try {
+        const ext = (req.file.originalname && req.file.originalname.includes('.'))
+            ? req.file.originalname.slice(req.file.originalname.lastIndexOf('.'))
+            : (req.file.mimetype === 'image/jpeg' ? '.jpg' : req.file.mimetype === 'image/png' ? '.png' : '.jpg');
+        const path = `dishes/${crypto.randomUUID()}${ext}`;
+        await storage.uploadBuffer(path, req.file.buffer, req.file.mimetype);
+        const url = await storage.getImageUrl(path);
+        res.json({ path, url: url || path });
+    } catch (err) {
+        if (!storage.BUCKET_NAME) {
+            return res.status(503).json({ error: 'Upload not configured; set GCS_BUCKET_NAME' });
+        }
+        next(err);
+    }
+});
 
 // Routes
 // 1. Get Menu Items
@@ -106,7 +143,8 @@ app.get('/api/food-items', async (req, res, next) => {
 
         query += ' ORDER BY category, name';
         const result = await db.query(query, params);
-        res.json(result.rows);
+        const rows = await storage.resolveImages(result.rows);
+        res.json(rows);
     } catch (err) {
         next(err);
     }
@@ -119,7 +157,9 @@ app.get('/api/food-items/:id', async (req, res, next) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Food item not found' });
         }
-        res.json(result.rows[0]);
+        const row = result.rows[0];
+        row.imageUrl = await storage.resolveImage(row.image);
+        res.json(row);
     } catch (err) {
         next(err);
     }
@@ -206,7 +246,8 @@ app.get('/api/menus', async (req, res, next) => {
             ORDER BY mfi.display_order, f.category, f.name
         `, [menuId]);
 
-        res.json({ items: itemsResult.rows, isDefault: !usedDateMenu });
+        const items = await storage.resolveImages(itemsResult.rows);
+        res.json({ items, isDefault: !usedDateMenu });
     } catch (err) {
         next(err);
     }
@@ -245,7 +286,8 @@ app.get('/api/menus/default', async (req, res, next) => {
             ORDER BY mfi.display_order, f.category, f.name
         `, [menuId]);
 
-        res.json({ menu: menuResult.rows[0], items: itemsResult.rows });
+        const items = await storage.resolveImages(itemsResult.rows);
+        res.json({ menu: menuResult.rows[0], items });
     } catch (err) {
         next(err);
     }
@@ -480,7 +522,8 @@ app.get('/api/deals', async (req, res, next) => {
         }
         query += ' ORDER BY display_order, created_at DESC';
         const result = await db.query(query, params);
-        res.json(result.rows);
+        const rows = await storage.resolveImages(result.rows);
+        res.json(rows);
     } catch (err) {
         next(err);
     }
@@ -494,6 +537,7 @@ app.get('/api/deals/:id', async (req, res, next) => {
             return res.status(404).json({ error: 'Deal not found' });
         }
         const deal = dealResult.rows[0];
+        deal.imageUrl = await storage.resolveImage(deal.image);
         const itemsResult = await db.query(`
             SELECT f.*, di.display_order
             FROM food_items f
@@ -501,7 +545,8 @@ app.get('/api/deals/:id', async (req, res, next) => {
             WHERE di.deal_id = $1 AND f.is_active = true
             ORDER BY di.display_order, f.name
         `, [req.params.id]);
-        res.json({ ...deal, items: itemsResult.rows });
+        const items = await storage.resolveImages(itemsResult.rows);
+        res.json({ ...deal, items });
     } catch (err) {
         next(err);
     }

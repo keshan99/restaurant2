@@ -18,7 +18,7 @@ function SortableItem({ item, onRemove, isFoodItem }) {
                 <GripVertical size={20} />
             </div>
             {item.image && (
-                <img src={item.image || 'https://placehold.co/48?text=No+image'} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                <img src={(item.imageUrl || item.image) || 'https://placehold.co/48?text=No+image'} alt="" className="w-12 h-12 rounded-lg object-cover" />
             )}
             <div className="flex-1">
                 <p className="font-medium text-gray-900">{item.name}</p>
@@ -123,7 +123,7 @@ export default function AdminDeals() {
         if (res.ok) {
             const data = await res.json();
             setEditing(deal.id);
-            setFormData({ name: data.name, description: data.description || '', image: data.image || '', price: data.price, food_item_ids: data.items.map((i) => i.id) });
+            setFormData({ name: data.name, description: data.description || '', image: data.image || '', price: data.price, food_item_ids: data.items ? data.items.map((i) => i.id) : [] });
             setSelectedItems(data.items);
         }
     };
@@ -318,7 +318,7 @@ export default function AdminDeals() {
                                         onClick={() => addItem(item)}
                                         className="p-3 border border-gray-200 rounded-lg hover:bg-orange-50 text-left"
                                     >
-                                        <img src={item.image || 'https://placehold.co/64?text=No+image'} alt="" className="w-full h-20 object-cover rounded mb-2" />
+                                        <img src={(item.imageUrl || item.image) || 'https://placehold.co/64?text=No+image'} alt="" className="w-full h-20 object-cover rounded mb-2" />
                                         <p className="text-sm font-medium truncate">{item.name}</p>
                                         <p className="text-xs text-gray-500">${item.price}</p>
                                     </button>

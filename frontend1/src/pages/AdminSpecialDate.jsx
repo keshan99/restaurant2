@@ -37,7 +37,7 @@ function SortableSelectedItem({ item, discount, setDiscount, toggleItem }) {
             >
                 <Check size={14} />
             </button>
-            <img src={item.image || 'https://placehold.co/80?text=No+Image'} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+            <img src={(item.imageUrl || item.image) || 'https://placehold.co/80?text=No+Image'} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
             <div className="min-w-0 flex-1">
                 <p className="font-medium text-gray-900 truncate">{item.name}</p>
                 <p className="text-xs text-gray-500">${item.price} {item.is_veg ? '· 🌱' : ''}</p>
@@ -413,7 +413,7 @@ export default function AdminSpecialDate() {
                                                                         className="flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center border-gray-300"
                                                                     >
                                                                     </button>
-                                                                    <img src={item.image || 'https://placehold.co/80?text=No+Image'} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                                                                    <img src={(item.imageUrl || item.image) || 'https://placehold.co/80?text=No+Image'} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                                                                     <div className="min-w-0 flex-1">
                                                                         <p className="font-medium text-gray-900 truncate">{item.name}</p>
                                                                         <p className="text-xs text-gray-500">${item.price} {item.is_veg ? '· 🌱' : ''}</p>

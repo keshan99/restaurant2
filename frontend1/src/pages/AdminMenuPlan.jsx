@@ -149,7 +149,7 @@ export default function AdminMenuPlan() {
                                                 onClick={() => addItemToMenu(item)}
                                             >
                                                 <div className="flex items-center space-x-3">
-                                                    <img src={item.image} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                                                    <img src={item.imageUrl || item.image} alt="" className="w-12 h-12 rounded-lg object-cover" />
                                                     <div>
                                                         <div className="font-semibold">{item.name}</div>
                                                         <div className="text-xs text-gray-500">${item.price} • {item.is_veg ? '🌱' : '🥩'}</div>
@@ -200,7 +200,7 @@ export default function AdminMenuPlan() {
                                         {menuItems.filter(item => item.category === cat).map(item => (
                                             <div key={item.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 shadow-sm">
                                                 <div className="flex items-center space-x-3">
-                                                    <img src={item.image} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                                                    <img src={item.imageUrl || item.image} alt="" className="w-12 h-12 rounded-lg object-cover" />
                                                     <div>
                                                         <div className="font-semibold">{item.name}</div>
                                                         <div className="text-xs text-gray-500">${item.price} • {item.is_veg ? '🌱' : '🥩'}</div>
