@@ -1,4 +1,5 @@
 import React from 'react';
+import { getImageSrc } from '../config/api';
 
 function discountedPrice(price, discount_type, discount_value) {
     if (!discount_type || discount_value == null) return null;
@@ -19,7 +20,7 @@ function MenuCard({ item }) {
                 <img
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    src={item.imageUrl || item.image}
+                    src={getImageSrc(item.imageUrl || item.image)}
                 />
                 {hasDiscount && (
                     <div className="absolute top-4 left-4 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow">

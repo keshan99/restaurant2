@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import LoadingSpinner from '../components/LoadingSpinner';
-import API_URL from '../config/api';
+import API_URL, { getImageSrc } from '../config/api';
 
 const API = API_URL;
 
@@ -16,7 +16,7 @@ function DealCard({ deal }) {
         <div className="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
             {deal.image && (
                 <div className="relative h-64 overflow-hidden">
-                    <img src={deal.imageUrl || deal.image} alt={deal.name} className="w-full h-full object-cover" />
+                    <img src={getImageSrc(deal.imageUrl || deal.image)} alt={deal.name} className="w-full h-full object-cover" />
                     {savings > 0 && (
                         <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                             Save ${savings.toFixed(2)}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, X, ArrowLeft } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
-import API_URL, { STORAGE_BUCKET } from '../config/api';
+import API_URL, { STORAGE_BUCKET, getImageSrc } from '../config/api';
 
 const API = API_URL;
 
@@ -328,7 +328,7 @@ export default function AdminFoodLibrary() {
                                     {(imageDisplayUrl || formData.image) && (
                                         <div className="mb-3">
                                             <img
-                                                src={imageDisplayUrl || formData.image}
+                                                src={getImageSrc(imageDisplayUrl || formData.image)}
                                                 alt="Preview"
                                                 className="w-full max-w-xs h-48 object-cover rounded-lg border border-gray-200"
                                             />
@@ -446,7 +446,7 @@ export default function AdminFoodLibrary() {
                                         {itemsInCategory.map((item) => (
                                             <div key={item.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
                                                 <img
-                                                    src={(item.imageUrl || item.image) || 'https://placehold.co/400x300?text=No+Image'}
+                                                    src={getImageSrc(item.imageUrl || item.image) || 'https://placehold.co/400x300?text=No+Image'}
                                                     alt={item.name}
                                                     className="w-full h-48 object-cover"
                                                 />

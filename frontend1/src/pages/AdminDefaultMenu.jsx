@@ -5,7 +5,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import LoadingSpinner from '../components/LoadingSpinner';
-import API_URL from '../config/api';
+import API_URL, { getImageSrc } from '../config/api';
 
 const API = API_URL;
 const CATEGORIES = [
@@ -75,7 +75,7 @@ function SortableMenuItem({ item, editingDiscount, setEditingDiscount, updateIte
             >
                 <GripVertical size={18} />
             </div>
-            <img src={(item.imageUrl || item.image) || 'https://placehold.co/64?text=No+image'} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
+            <img src={getImageSrc(item.imageUrl || item.image) || 'https://placehold.co/64?text=No+image'} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
             <div className="min-w-0 flex-1">
                 <p className="font-medium text-gray-900 truncate">{item.name}</p>
                 <p className="text-sm text-gray-500">
@@ -476,7 +476,7 @@ export default function AdminDefaultMenu() {
                                                                     className="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg hover:bg-orange-50 transition"
                                                                 >
                                                                     <img
-                                                                        src={(item.imageUrl || item.image) || 'https://placehold.co/48?text=No+image'}
+                                                                        src={getImageSrc(item.imageUrl || item.image) || 'https://placehold.co/48?text=No+image'}
                                                                         alt=""
                                                                         className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
                                                                     />

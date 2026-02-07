@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import MenuList from '../components/MenuList';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ArrowRight, Clock, MapPin, Phone, Mail, Star, TrendingUp } from 'lucide-react';
-import API_URL from '../config/api';
+import API_URL, { getImageSrc } from '../config/api';
 
 const API = API_URL;
 
@@ -144,7 +144,7 @@ function CustomerHome() {
                                         >
                                             {deal.image && (
                                                 <div className="relative h-48 overflow-hidden">
-                                                    <img src={deal.imageUrl || deal.image} alt={deal.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                    <img src={getImageSrc(deal.imageUrl || deal.image)} alt={deal.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                     {savings > 0 && (
                                                         <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                                                             Save ${savings.toFixed(2)}
