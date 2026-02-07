@@ -5,8 +5,9 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import LoadingSpinner from '../components/LoadingSpinner';
+import API_URL from '../config/api';
 
-const API = 'http://localhost:3000';
+const API = API_URL;
 const CATEGORIES = [
     { key: 'mains', label: 'Main courses' },
     { key: 'sides', label: 'Sides & starters' },

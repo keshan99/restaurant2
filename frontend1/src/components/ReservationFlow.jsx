@@ -114,7 +114,8 @@ function ReservationFlow({ onBack }) {
                                         phone: document.getElementById('booking-phone').value
                                     };
 
-                                    fetch('http://localhost:3000/api/bookings', {
+                                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+                                    fetch(`${API_URL}/api/bookings`, {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify(booking)

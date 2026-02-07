@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, X, ArrowLeft } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
+import API_URL from '../config/api';
 
-const API = 'http://localhost:3000';
+const API = API_URL;
 
 export default function AdminFoodLibrary() {
     const navigate = useNavigate();
@@ -326,7 +327,7 @@ export default function AdminFoodLibrary() {
                                             value={formData.image}
                                             onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                                             className="w-full px-4 py-2 border rounded-lg"
-                                            placeholder="http://localhost:3000/photos/dish.jpg"
+                                            placeholder="https://storage.googleapis.com/restaurant-files/dish.jpg"
                                         />
                                     </div>
                                 </div>

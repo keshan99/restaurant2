@@ -17,16 +17,18 @@ export default function AdminMenuPlan() {
         fetchData();
     }, [selectedDate]);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    
     const fetchData = async () => {
         setLoading(true);
         try {
             // Fetch food library
-            const libRes = await fetch('http://localhost:3000/api/food-items?active=true');
+            const libRes = await fetch(`${API_URL}/api/food-items?active=true`);
             const libData = await libRes.json();
             setFoodLibrary(libData);
 
             // Fetch menu for selected date
-            const menuRes = await fetch(`http://localhost:3000/api/menus?date=${selectedDate}`);
+            const menuRes = await fetch(`${API_URL}/api/menus?date=${selectedDate}`);
             const menuData = await menuRes.json();
             setMenuItems(menuData.items || []);
             setIsDefault(menuData.isDefault || false);
@@ -47,7 +49,7 @@ export default function AdminMenuPlan() {
             // If menu doesn't exist for this date (isDefault was true), create it
             // Otherwise update it. 
             // Simplified: Just always try to create/update
-            const res = await fetch('http://localhost:3000/api/menus', {
+            const res = await fetch(`${API_URL}/api/menus`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

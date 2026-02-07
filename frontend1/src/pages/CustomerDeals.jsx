@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import LoadingSpinner from '../components/LoadingSpinner';
+import API_URL from '../config/api';
 
-const API = 'http://localhost:3000';
+const API = API_URL;
 
 function DealCard({ deal }) {
     const navigate = useNavigate();

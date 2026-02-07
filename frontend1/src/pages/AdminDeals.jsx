@@ -5,8 +5,9 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import LoadingSpinner from '../components/LoadingSpinner';
+import API_URL from '../config/api';
 
-const API = 'http://localhost:3000';
+const API = API_URL;
 
 function SortableItem({ item, onRemove, isFoodItem }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });

@@ -55,3 +55,17 @@ backend/uploads/
 # Logs
 logs/
 *.log
+
+# Deployment files (not needed in repo)
+deploy.sh
+deploy.ps1
+setup-gcp.sh
+DEPLOYMENT.md
+DEPLOYMENT_GUI.md
+DEPLOYMENT_SUMMARY.md
+QUICK_DEPLOY.md
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log

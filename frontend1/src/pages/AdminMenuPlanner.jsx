@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../config/api';
 
 function AdminMenuPlanner() {
     const navigate = useNavigate();
     const [menuStatus, setMenuStatus] = React.useState({ today: false, tomorrow: false });
 
     React.useEffect(() => {
-        fetch('http://localhost:3000/api/menu')
+        fetch(`${API_URL}/api/menu`)
             .then(res => res.json())
             .then(data => {
                 const todayReady = (data.today?.mains?.length > 0 || data.today?.sides?.length > 0);

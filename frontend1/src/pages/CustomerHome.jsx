@@ -4,8 +4,9 @@ import Header from '../components/Header';
 import MenuList from '../components/MenuList';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ArrowRight, Clock, MapPin, Phone, Mail, Star, TrendingUp } from 'lucide-react';
+import API_URL from '../config/api';
 
-const API = 'http://localhost:3000';
+const API = API_URL;
 
 function CustomerHome() {
     const [currentDay, setCurrentDay] = useState('today');
