@@ -6,7 +6,7 @@ require('dotenv').config();
 const db = require('./db');
 const storage = require('./storage');
 const app = express();
-const port = 3000;
+const port = Number(process.env.PORT) || 3000;
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB
 
