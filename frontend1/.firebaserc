@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "restaurant-app"
-  }
+    "default": "phrasal-descent-486610-k8"
+  },
+  "targets": {},
+  "etags": {}
 }
