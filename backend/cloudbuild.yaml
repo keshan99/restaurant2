@@ -1,8 +1,7 @@
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/restaurant-api:$SHORT_SHA', '.']
-  
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/restaurant-api:$SHORT_SHA', '-f', 'backend/Dockerfile', 'backend']
   # Push the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/restaurant-api:$SHORT_SHA']
@@ -23,7 +22,7 @@ steps:
       - '--set-secrets'
       - 'DATABASE_URL=database-url:latest'
       - '--set-env-vars'
-      - 'NODE_ENV=production'
+      - 'NODE_ENV=production,GCS_BUCKET_NAME=restaurant-files-001'
       - '--memory'
       - '512Mi'
       - '--cpu'
@@ -37,9 +36,5 @@ steps:
 
 images:
   - 'gcr.io/$PROJECT_ID/restaurant-api:$SHORT_SHA'
-
-options:
-  machineType: 'E2_HIGHCPU_8'
-  logging: CLOUD_LOGGING_ONLY
 
 timeout: '1200s'
