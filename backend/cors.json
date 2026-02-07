@@ -1,9 +1,12 @@
 [
   {
     "origin": [
-      "https://restaurant.zyshaire.com",
       "http://localhost:5173",
-      "http://localhost:3000"
+      "http://localhost:3000",
+      "https://phrasal-descent-486610-k8.web.app",
+      "https://phrasal-descent-486610-k8.firebaseapp.com",
+      "https://restaurant.zyshaire.com",
+      "https://api.restaurant.zyshaire.com"
     ],
     "method": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     "responseHeader": [
